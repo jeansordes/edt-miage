@@ -1,0 +1,23 @@
+// make sure there is no double \n
+\n\n
+    \n
+
+// pour qu'en modifiant le SVG (créé depuis le PDF via Inkscape) tout soit bien aligné
+( [xy])="[\d\s\.]*"
+    $1="0"
+
+// met l'identifiant des blocs de texte dans ces blocs de texte
+(<g id="g(\d{3,4})" .*\n.*\n.*>)(.*</tspan>)
+    $1$2 → $3
+
+// supprime les blocs qui ne sont pas des cours
+<g.*\n.*\n.*\n.*→.*(PAUSE|LUNDI|MARDI|MERCREDI|\d sep|36|FI \+ FA|7h55|9h55|10h05|12h|13h|15h|17h|18h).*\n.*\n(.*<.*>\n.*\n.*</.*>\n)*.*</g>\n.*</g>
+    RIEN ¯\_(ツ)_/¯
+
+// ça supprime les évenements "voir planning site miage toulouse"
+BEGIN:VEVENT((?!END:VEVENT).*\n)*SUMMARY:Voir Planning site MIAGE Toulouse((?!END:VEVENT).*\n)*END:VEVENT
+    RIEN
+
+//
+(<text.*matrix\(.*)([\d\.]*),([\d\.]*)\)
+    $1$2,$3
