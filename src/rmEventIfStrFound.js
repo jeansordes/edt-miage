@@ -15,7 +15,7 @@ module.exports = async (ics_filepath, str2find) => {
             } else if (line.indexOf(str2find) != -1) {
                 eventShouldBeRemoved = true;
             } else if (line.indexOf('END:VEVENT') != -1 && eventShouldBeRemoved) {
-                let tmp = lines.splice(currentEventStartIndex, i - currentEventStartIndex + 1);
+                lines.splice(currentEventStartIndex, i - currentEventStartIndex + 1);
                 i = currentEventStartIndex - 1;
                 eventShouldBeRemoved = false;
             }

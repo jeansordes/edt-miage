@@ -1,5 +1,9 @@
 const fs = require('fs'),
-    logerr = require('./logerr');
+    logerr = require('./logerr')
+ics = require('ics');
+
+// util
+const logEvt = (events, i) => console.log(Object.keys(events)[i], events[Object.keys(events)[i]]);
 
 const week2days = {
     36: [[2019, 9, 2], [2019, 9, 3], [2019, 9, 4]],
@@ -40,23 +44,23 @@ const svgDatesX = {
 const svgDatesY = {
     // weekday (0 monday, 1 tuesday, 2 wednesday), starting hour, starting minute
     557: [0, 7, 55],
-    530: [0, 9, 55],
+    530: [0, 10, 5],
     497: [0, 12, 5],
     491: [0, 13, 40],
-    455: [0, 15, 40],
-    420: [0, 17, 50],
+    455: [0, 15, 50],
+    420: [0, 18, 0],
     393: [0, 20, 0],
 
     374: [1, 7, 55],
-    328: [1, 9, 55],
+    328: [1, 10, 5],
     287: [1, 12, 5],
     283: [1, 13, 40],
-    255: [1, 15, 40],
-    221: [1, 17, 50],
+    255: [1, 15, 50],
+    221: [1, 18, 0],
     191: [1, 20, 0],
 
     175: [2, 7, 55],
-    141: [2, 9, 55],
+    141: [2, 10, 5],
     93: [2, 12, 5],
 };
 // Create range of each dates
@@ -69,7 +73,7 @@ const rangeY = [
     [svgKeys[10], svgKeys[16]]
 ];
 
-module.exports = async (svgPath, icsPath) => {
+module.exports = async (svgPath, icsPath, fileCreatedOn) => {
     fs.readFile(svgPath, { encoding: 'utf-8' }, (err, data) => {
         if (err) return logerr(err);
         // SVG FILE == DATA
@@ -85,7 +89,14 @@ module.exports = async (svgPath, icsPath) => {
             range1 = parseFloat(range[1]);
             return (el >= range0 && el <= range1) || (el <= range0 && el >= range1)
         };
-        const isInAllRanges = (x, y) => (isInRange(x, rangeX) && (isInRange(y, rangeY[0]) || isInRange(y, rangeY[1]) || isInRange(y, rangeY[2])));
+        const isInAllRanges = (x, y) => (
+            isInRange(x, rangeX)
+            && (
+                isInRange(y, rangeY[0])
+                || isInRange(y, rangeY[1])
+                || isInRange(y, rangeY[2])
+            )
+        );
         for (let i = 0; i < matches.length; i++) {
             if (!isInAllRanges(matches[i][1], matches[i][2])) {
                 matches.splice(i, 1);
@@ -100,8 +111,19 @@ module.exports = async (svgPath, icsPath) => {
             el = parseFloat(el);
             if (axis != 'x' && axis != 'y')
                 return logerr("Wrong axis given, 'x' or 'y' expected");
-            if ((axis == 'x' && !isInRange(el, rangeX)) || (axis == 'y' && !(isInRange(el, rangeY[0]) || isInRange(el, rangeY[1]) || isInRange(el, rangeY[2])))) {
-                return logerr(`'el' given is not in range (el == ${el}, axis == '${axis}', range == [${axis == 'x' ? rangeX.toString() : rangeY.toString()}]`);
+            if (
+                axis == 'x' && !isInRange(el, rangeX)
+                || (
+                    axis == 'y'
+                    && !(
+                        isInRange(el, rangeY[0])
+                        || isInRange(el, rangeY[1])
+                        || isInRange(el, rangeY[2])
+                    )
+                )
+            ) {
+                return logerr(`'el' given is not in range (el == ${el},
+                     axis == '${axis}', range == [${axis == 'x' ? rangeX.toString() : rangeY.toString()}]`);
             }
             // for each axis
             const pts = Object.keys(axis == 'x' ? svgDatesX : svgDatesY).map(v => parseFloat(v));
@@ -129,13 +151,122 @@ module.exports = async (svgPath, icsPath) => {
             }
         }
         // console.log(Object.keys(events).map(k => new Date(parseInt(k)).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })));
-        // const str2date = d => new Date(parseInt(d)).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+        // console.log(new Date(1568016300000).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }), events['1568016300000'])
+        // const int2date = d => new Date(parseInt(d)).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+        let icsEvents = [];
+        const array2icsJson = (title, desc, location, start, duration) => ({
+            title,
+            description: desc + `\n\nExporté le : ` + fileCreatedOn.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }),
+            location,
+            start,
+            duration: (duration ? duration : ({ hours: 2 }))
+        });
         for (let i = 0; i < Object.keys(events).length; i++) {
             const evt = events[Object.keys(events)[i]];
-            if (evt.length != 3 && evt.length != 6) {
-                console.log(Object.keys(events)[i], evt);
+            let startDate = new Date(Object.keys(events)[i]);
+            startDateAsArray = [
+                startDate.getFullYear(),
+                startDate.getMonth() + 1,
+                startDate.getDate(),
+                startDate.getHours() + 1,
+                startDate.getMinutes()
+            ];
+            let nextEvt = events[Object.keys(events)[i + 1]];
+
+            // check si c'est un TP, exclu le cas où c'est 1TP1 ou 3TP2
+            // et 'false' sert à indiquer que dans le cas initial, 'prev' == 'false'
+            if (evt.reduce((prev, curr) => (
+                prev
+                || (
+                    typeof curr[2] == "string"
+                    && curr[2].search(/TP/) != -1
+                    && curr[2].search(/\dTP/) == -1
+                )), false
+            )) {
+                evt[0][2] = 'TP ' + evt[0][2]; // et dans ce cas là on rajoute 'TP' au début du nom de l'évenement
+                // Dans le cas où il y a plusieurs lignes
+                if (evt.length == 6) evt[3][2] = 'TP ' + evt[3][2];
+                if (evt.length == 7) evt[4][2] = 'TP ' + evt[4][2];
+            }
+
+            if (nextEvt && nextEvt[0][2] == 'U4-301') { // cas particulier
+                icsEvents.push(array2icsJson(evt[0][2], evt[2][2], nextEvt[0][2], startDateAsArray, ({ hours: 1 })));
+
+                icsEvents.push(array2icsJson(
+                    "TP " + evt[0][2],
+                    nextEvt[2][2],
+                    nextEvt[3][2],
+                    ([
+                        startDate.getFullYear(),
+                        startDate.getMonth() + 1,
+                        startDate.getDate(),
+                        14,
+                        40
+                    ]),
+                    ({ hours: 3, minutes: 10 })
+                ));
+                i++;
+            } else if (evt.length == 3 || evt.length == 6) {
+                /**
+                 * EVENEMENTS NORMAUX (3 ou 6 lignes)
+                 */
+                const traiterEvt = evt => {
+                    // vérifier si c'est un cours avec plusieurs salles sur le même créneau
+                    if (evt[1][2].search(/[- ]...?-...$/) != -1) {
+                        // exemple -U4-300
+                        icsEvents.push(array2icsJson(
+                            evt[0][2],
+                            evt[1][2] + '\n' + evt[2][2],
+                            evt[1][2].match(/[- ](...?-...)$/)[1] + '/' + evt[2][2].match(/[- ](...?-...)$/)[1],
+                            startDateAsArray
+                        ));
+                    } else if (evt[0][2].search(/CONTR.LE CONTINU/) != -1) {
+                        //  Si c'est un contrôle continu
+                        icsEvents.push(array2icsJson('CC ' + evt[1][2], evt[0][2] + ' de ' + evt[1][2], evt[2][2], startDateAsArray));
+                    } else {
+                        icsEvents.push(array2icsJson(evt[0][2], evt[1][2], evt[2][2], startDateAsArray));
+                    }
+                }
+
+                // Dans le cas où c'est 3 ou 6 lignes, on considère les 3 premières lignes comme un événement
+                traiterEvt(evt);
+                // Dans le cas où il y a 6 lignes, on traite les 3 dernières lignes comme un autre événement
+                if (evt.length == 6) traiterEvt(evt.slice(3));
+
+            } else if (evt.length == 4 && evt[1][2] == 'Cours') { // cas particulier
+                icsEvents.push(array2icsJson(evt[0][2], evt[1][2] + ' ' + evt[2][2], evt[3][2], startDateAsArray));
+            } else if (evt.length == 5 && evt[0][2].search('P. Objet') != -1) { // cas particulier
+                icsEvents.push(array2icsJson(
+                    evt[0][2],
+                    evt[1][2].match(/^([a-zA-Z0-9 ]*)-/)[1],
+                    evt[1][2].match(/-(.*)/)[1],
+                    startDateAsArray
+                ));
+                icsEvents.push(array2icsJson('TP ' + evt[2][2], evt[3][2], evt[4][2], startDateAsArray));
+            } else if (evt.length == 7 && evt[3][2] == "Amener PC") {
+                icsEvents.push(array2icsJson(evt[0][2], evt[1][2] + '\n' + evt[3][2], evt[2][2], startDateAsArray));
+                icsEvents.push(array2icsJson(evt[4][2], evt[5][2], evt[6][2], startDateAsArray));
+            } else if ((new Date(Object.keys(events)[i])).getTime() < (new Date()).getTime()) {
+                // si l'évenement est déjà passé, ne pas traiter, not worth the time
+            } else {
+                // TODO : Prévenir john.sordes@gmail.com qu'il y a un soucis !
+
+                logEvt(events, i);
             }
         }
-        // console.log(new Date(1568016300000).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }), events['1568016300000'])
+        ics.createEvents(icsEvents, (err, value) => {
+            if (err) return logerr(err);
+
+            // Remove X-PUBLISHED-TTL:PT1H, sinon ça ne traduit pas correctement les \n dans les descriptions des evenements
+            let lines = value.split(`\n`);
+            for (let i = 0, keepGoing = true; i < lines.length && keepGoing; i++) {
+                const l = lines[i];
+                if (l.indexOf('X-PUBLISHED-TTL:PT1H') != -1) {
+                    lines.splice(i, 1);
+                    keepGoing = false;
+                }
+            }
+            fs.writeFileSync(icsPath, lines.join(`\n`));
+        });
     })
 };
