@@ -5,16 +5,15 @@ ics = require('ics');
 // util
 const logEvt = (events, i) => console.log(Object.keys(events)[i], events[Object.keys(events)[i]]);
 
+/**
+ * TODO LIST pour quand le PDF change :
+ * Ouvrir Inkscape, faire ctrl+maj+D puis tout en haut à droite mettre PT au lieux de PX
+ * Ensuite, mettre des guides horizontaux et verticaux là où il faut
+ * modifier week2days, svgDatesX et svgDatesY
+ * vérifier que les indices de svgKeys (juste après les 3 jsons) sont toujours bons
+ * */
+
 const week2days = {
-    36: [[2019, 9, 2], [2019, 9, 3], [2019, 9, 4]],
-    37: [[2019, 9, 9], [2019, 9, 10], [2019, 9, 11]],
-    38: [[2019, 9, 16], [2019, 9, 17], [2019, 9, 18]],
-    39: [[2019, 9, 23], [2019, 9, 24], [2019, 9, 25]],
-    40: [[2019, 9, 30], [2019, 10, 1], [2019, 10, 2]],
-    41: [[2019, 10, 7], [2019, 10, 8], [2019, 10, 9]],
-    42: [[2019, 10, 14], [2019, 10, 15], [2019, 10, 16]],
-    43: [[2019, 10, 21], [2019, 10, 22], [2019, 10, 23]],
-    44: [[2019, 10, 28], [2019, 10, 29], [2019, 10, 30]],
     45: [[2019, 11, 4], [2019, 11, 5], [2019, 11, 6]],
     46: [[2019, 11, 11], [2019, 11, 12], [2019, 11, 13]],
     47: [[2019, 11, 18], [2019, 11, 19], [2019, 11, 20]],
@@ -23,7 +22,6 @@ const week2days = {
     50: [[2019, 12, 9], [2019, 12, 10], [2019, 12, 11]],
     51: [[2019, 12, 16], [2019, 12, 17], [2019, 12, 18]],
 }
-// Tout est en PT dans inkscape (ctrl+maj+D puis tout en haut à droite mettre PT au lieux de PX)
 const svgDatesX = {
     47: null,
     109: 45,
@@ -58,7 +56,7 @@ const svgDatesY = {
 };
 // Create range of each dates
 let svgKeys = Object.keys(svgDatesX);
-const rangeX = [svgKeys[0], svgKeys[15]];
+const rangeX = [svgKeys[0], svgKeys[svgKeys.length - 1]];
 svgKeys = Object.keys(svgDatesY);
 const rangeY = [
     [svgKeys[0], svgKeys[2]],
