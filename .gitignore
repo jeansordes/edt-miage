@@ -1,4 +1,5 @@
 node_modules/
-assets/
+assets/**
 yarn.lock
 package-lock.json
+!.gitkeep
