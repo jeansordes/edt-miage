@@ -2,10 +2,11 @@
 const
     rPath = require('path').resolve,
     fs = require('fs'),
-    rmEventIfStrFound = require('./src/rmEventIfStrFound'),
-    { saveUT3file, saveUT1file } = require('./src/saveFiles'),
+    rmEventIfStrFound = require('./src/ut1/rmEventIfStrFound'),
+    saveUT1file = require('./src/ut1/saveUT1File'),
+    saveUT3file = require('./src/ut3/saveUT3File'),
     paths = require('./src/filesPath'),
-    ut3svg2ics = require('./src/ut3svg2ics'),
+    ut3svg2ics = require('./src/ut3/ut3svg2ics'),
     exec = require('util').promisify(require('child_process').exec),
     pdf2svg = async (inputPath, outputPath) => await exec(`inkscape -l "${outputPath}" "${inputPath}"`);
 
@@ -25,8 +26,6 @@ saveUT3file(paths.ut3.url, paths.ut3.pdf_tmp, paths.ut3.pdf).then(({ isNew, time
 
 // UT1
 saveUT1file(paths.ut1.url, paths.ut1.ics_tmp, paths.ut1.ics).then(({ isNew, time }) => {
-    rmEventIfStrFound(paths.ut1.ics, 'Voir Planning site MIAGE Toulouse').then(() => {
-        console.log("UT1 File is ready")
-        console.log(isNew ? "New file :" : "Already up-to-date :", time);
-    })
+    console.log("UT1 File is ready")
+    console.log(isNew ? "New file :" : "Already up-to-date :", time);
 });
