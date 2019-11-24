@@ -167,6 +167,12 @@ module.exports = async (svgPath, icsPath, fileCreatedOn) => {
 
             } else if (evt.length == 4 && evt[1] == 'Cours') { // cas particulier
                 icsEvents.push(array2icsJson(evt[0], evt[1] + ' ' + evt[2], evt[3], startDateAsArray));
+            } else if (evt.length == 4 && evt[0].search(/CONTR.LE CONTINU/) != -1) {
+                if (evt[2] == 'RO'){ // cas particulier
+                    icsEvents.push(array2icsJson(`CC ${evt[2]} (${evt[1]})`, evt[0] + ' de ' + evt[2], evt[3], startDateAsArray));
+                } else {
+                    icsEvents.push(array2icsJson('CC ' + evt[1], evt[0] + ' de ' + evt[1], evt[2] + '/' + evt[3], startDateAsArray));
+                }
             } else if (evt.length == 5 && evt[0].search('P. Objet') != -1) { // cas particulier
                 icsEvents.push(array2icsJson(
                     evt[0],
