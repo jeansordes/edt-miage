@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dateformat": "^3.0.3",
     "ics": "^2.18.0",
     "pdf-parse": "^1.1.1",
     "request": "^2.88.0"
