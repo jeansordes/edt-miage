@@ -1,6 +1,6 @@
 const fs = require('fs'),
     request = require('request'),
-    logerr = require('../logerr'),
+    logerr = require('../util/logerr'),
     rmEventIfStrFound = require('./rmEventIfStrFound');
 
 // UTIL

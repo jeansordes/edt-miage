@@ -1,7 +1,6 @@
 const fs = require('fs'),
-    logerr = require('../logerr'),
-    svgTxt2ics = require('./txt2ics'),
-    { week2days, svgDatesX, svgDatesY, rangeX, rangeY } = require('./config/svgCoordinates');
+    logerr = require('../util/logerr'),
+    { week2days, svgDatesX, svgDatesY, rangeX, rangeY } = require('./svgCoordinates');
 
 // util
 const isInRange = (el, range) => {

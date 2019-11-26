@@ -25,5 +25,5 @@ Object.defineProperty(global, '__function', {
 });
 
 module.exports = (...args) => {
-    console.log('\x1b[31m%s\x1b[0m', 'Error at ' + __stack[1].getFileName() + ':' + __stack[1].getLineNumber() + '\n', args)
+    console.error('\x1b[31m%s\x1b[0m', 'Error at ' + __stack[1].getFileName() + ':' + __stack[1].getLineNumber() + '\n', args)
 };

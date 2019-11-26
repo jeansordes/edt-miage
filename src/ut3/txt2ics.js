@@ -1,6 +1,7 @@
 const ics = require('ics'),
-    dateformat = require('dateformat')
-    fs = require('fs');
+    dateformat = require('dateformat'),
+    fs = require('fs'),
+    { warnAdmin } = require('./../util/mail');
 
 // util
 const logEvt = (events, i) => console.log(Object.keys(events)[i], events[Object.keys(events)[i]]);
@@ -14,6 +15,7 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
         start,
         duration: (duration ? duration : ({ hours: 2 }))
     });
+    let nbEventsFailed = 0; // nombre d'events qui n'ont pas été traités correctement
     for (let i = 0; i < Object.keys(events).length; i++) {
         const evt = events[Object.keys(events)[i]];
         let startDate = new Date(Object.keys(events)[i]);
@@ -102,17 +104,24 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
                 startDateAsArray
             ));
             icsEvents.push(array2icsJson('TP ' + evt[2], evt[3], evt[4], startDateAsArray));
-        } else if (evt.length == 7 && evt[3] == "Amener PC") {
-            icsEvents.push(array2icsJson(evt[0], evt[1] + '\n' + evt[3], evt[2], startDateAsArray));
-            icsEvents.push(array2icsJson(evt[4], evt[5], evt[6], startDateAsArray));
+            // } else if (evt.length == 7 && evt[3] == "Amener PC") {
+            //     icsEvents.push(array2icsJson(evt[0], evt[1] + '\n' + evt[3], evt[2], startDateAsArray));
+            //     icsEvents.push(array2icsJson(evt[4], evt[5], evt[6], startDateAsArray));
         } else if ((new Date(Object.keys(events)[i])).getTime() < (new Date()).getTime()) {
             // si l'évenement est déjà passé, ne pas traiter, not worth the time
         } else {
-            // TODO : Prévenir john.sordes@gmail.com qu'il y a un soucis !
-
+            // Prévenir l'admin qu'il y a un soucis !
+            nbEventsFailed++;
             logEvt(events, i);
         }
     }
+    if (nbEventsFailed > 0) {
+        warnAdmin(
+            nbEventsFailed + (nbEventsFailed > 1 ? ` évenements ont échoué à êtres traités` : ` évenement a échoué à être traité`),
+            'Bouge tes fesses, allez go go go'
+        );
+    }
+
     ics.createEvents(icsEvents, (err, value) => {
         if (err) return logerr(err);
 
