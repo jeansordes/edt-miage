@@ -104,9 +104,9 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
                 startDateAsArray
             ));
             icsEvents.push(array2icsJson('TP ' + evt[2], evt[3], evt[4], startDateAsArray));
-            // } else if (evt.length == 7 && evt[3] == "Amener PC") {
-            //     icsEvents.push(array2icsJson(evt[0], evt[1] + '\n' + evt[3], evt[2], startDateAsArray));
-            //     icsEvents.push(array2icsJson(evt[4], evt[5], evt[6], startDateAsArray));
+        } else if (evt.length == 7 && evt[3] == "Amener PC") {
+            icsEvents.push(array2icsJson(evt[0], evt[1] + '\n' + evt[3], evt[2], startDateAsArray));
+            icsEvents.push(array2icsJson(evt[4], evt[5], evt[6], startDateAsArray));
         } else if ((new Date(Object.keys(events)[i])).getTime() < (new Date()).getTime()) {
             // si l'évenement est déjà passé, ne pas traiter, not worth the time
         } else {
