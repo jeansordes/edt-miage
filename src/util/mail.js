@@ -1,19 +1,21 @@
 const nodemailer = require('nodemailer'),
     logerr = require('./logerr'),
-    getArgvValue = require('./parseArgv');
+    { getArgvValue, printUsage } = require('./parseArgv');
 
 // config
 const gmailUserArg = "googleAdminEmailAdress", gmailPwdArg = "googlePassword";
-const logerrAuth = () => logerr(`Un mail n'a pas pu être envoyé car il manque les arguments --${gmailUserArg}=... (ex: john.sordes@gmail.com) et --${gmailPwdArg}=...`);
+const logerrAuth = () => {
+    logerr(`Les mails ne peuvent êtres envoyés car les identifiants n'ont pas été renseignés`);
+    printUsage();
+};
 
 // check si les identifiants ont été fournis
-const
-    missingArgs = !getArgvValue(gmailUserArg) || !getArgvValue(gmailPwdArg);
+const setupArgsFound = getArgvValue(gmailUserArg).argFound && getArgvValue(gmailPwdArg).argFound;
 var mailAuth, transporter, mailOptions;
-if (!missingArgs) {
+if (setupArgsFound) {
     mailAuth = {
-        user: getArgvValue(gmailUserArg),
-        pass: getArgvValue(gmailPwdArg)
+        user: getArgvValue(gmailUserArg).string,
+        pass: getArgvValue(gmailPwdArg).string
     };
     transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -25,8 +27,10 @@ if (!missingArgs) {
 }
 
 module.exports = {
+    isSetupGood: () => setupArgsFound,
+    logerrAuth: logerrAuth,
     warnAdmin: (subject, msg) => {
-        if (missingArgs) {
+        if (!setupArgsFound) {
             logerrAuth();
         } else {
             mailOptions = {
