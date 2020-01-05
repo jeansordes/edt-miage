@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    logerr = require('../util/logerr'),
+    { logerr } = require('../util/logUtil'),
     { week2days, svgDatesX, svgDatesY, rangeX, rangeY } = require('./svgCoordinates');
 
 // util

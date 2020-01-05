@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    logerr = require('../util/logerr');
+    { logerr } = require('../util/logUtil');
 
 module.exports = async (ics_filepath, str2find) => {
     await fs.readFile(ics_filepath, 'utf8', (err, data) => {

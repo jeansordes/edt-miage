@@ -1,24 +1,37 @@
 const nodemailer = require('nodemailer'),
-    logerr = require('./logerr'),
+    { logerr, logwarn } = require('./logUtil'),
     { getArgvValue, printUsage } = require('./parseArgv');
 
 // config
-const gmailUserArg = "googleAdminEmailAdress", gmailPwdArg = "googlePassword";
+const personToContactArg = "personToContact",
+    mailLoginArg = "emailLogin",
+    mailPwdArg = "emailPassword",
+    mailHostAdressArg = "mailHostAdress",
+    mailHostPortArg = "mailHostPort";
 const logerrAuth = () => {
-    logerr(`Les mails ne peuvent êtres envoyés car les identifiants n'ont pas été renseignés`);
+    logerr(`Il manque des arguments (soit des identifiants mail, soit l'option --offline)`);
     printUsage();
 };
 
 // check si les identifiants ont été fournis
-const setupArgsFound = getArgvValue(gmailUserArg).argFound && getArgvValue(gmailPwdArg).argFound;
-var mailAuth, transporter, mailOptions;
-if (setupArgsFound) {
+const mailSetupArgsFound = getArgvValue(personToContactArg).argFound
+    && getArgvValue(mailLoginArg).argFound
+    && getArgvValue(mailPwdArg).argFound
+    && getArgvValue(mailHostAdressArg).argFound
+    && getArgvValue(mailHostPortArg).argFound
+    && getArgvValue();
+var mailAuth, mailHost, transporter, mailOptions;
+if (mailSetupArgsFound) {
     mailAuth = {
-        user: getArgvValue(gmailUserArg).string,
-        pass: getArgvValue(gmailPwdArg).string
+        user: getArgvValue(mailLoginArg).string,
+        pass: getArgvValue(mailPwdArg).string
     };
+    mailHost = {
+        host: getArgvValue(mailHostAdressArg).string,
+        port: getArgvValue(mailHostPortArg).string,
+    }
     transporter = nodemailer.createTransport({
-        service: 'gmail',
+        ...mailHost,
         auth: mailAuth
     });
     mailOptions = {
@@ -27,21 +40,25 @@ if (setupArgsFound) {
 }
 
 module.exports = {
-    isSetupGood: () => setupArgsFound,
+    isSetupGood: () => mailSetupArgsFound,
     logerrAuth: logerrAuth,
     warnAdmin: (subject, msg) => {
-        if (!setupArgsFound) {
+        if (getArgvValue('offline').argFound) {
+            logwarn(`No email was sent because the argument "--offline" was found`);
+            logerr(subject);
+        } else if (!mailSetupArgsFound) {
             logerrAuth();
         } else {
+
             mailOptions = {
                 ...mailOptions,
-                to: `Admin adress <${mailAuth.user}>`,
+                to: `Person responsible for edt.miage.online <${getArgvValue(personToContactArg).string}>`,
                 subject: `⚠ edt.miage.online : ${subject}`,
                 text: msg
             }
             transporter.sendMail(mailOptions, (err, info) => {
                 if (err) {
-                    logerr(err, mailAuth);
+                    logerr(err, mailAuth, mailHost);
                 } else {
                     console.log('Email sent: ' + info.response);
                 }

@@ -1,7 +1,7 @@
 const fs = require('fs'),
     request = require('request'),
     pdfParse = require('pdf-parse'),
-    logerr = require('../util/logerr');
+    { logerr } = require('../util/logUtil');
 
 // UTIL
 const saveDistantFile = (distantUrl, saveAs) => {

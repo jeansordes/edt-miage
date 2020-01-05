@@ -3,7 +3,7 @@ const path = require('path'),
 
 module.exports = {
     ut3: {
-        url: "http://toulouse.miage.fr/tav/EDT%20L3%20S5%2019-20.pdf",
+        url: "http://toulouse.miage.fr/tav/EDT%20L3%20S6%2019-20.pdf",
         pdf: path.resolve(assetsDirname + "ut3.pdf"),
         pdf_tmp: path.resolve(assetsDirname + "ut3.tmp.pdf"),
         svg: path.resolve(assetsDirname + "ut3.svg"),
