@@ -30,10 +30,10 @@ if (!workOffline) {
     <p><input onClick="this.select();" value="${prodServerURL}ut1.ics" type="text"/></p>
     <p><input onClick="this.select();" value="${prodServerURL}ut3.ics" type="text"/></p>
     <h3>Aperçu des emplois du temps</h3>
-    <p>Emploi du temps UT1 Capitole</p>
-    <iframe id='cv_if5' src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=${encodeURIComponent(prodServerURL)}ut1.ics&theme=RE&ccolor=%23ffffc0&dims=1&gtype=cv_monthgrid&gcloseable=0&gnavigable=1&gperiod=month&itype=cv_simpleevent' allowTransparency=true scrolling='no' frameborder=0 height=600 width=800></iframe>
     <p>Emploi du temps UT3 Paul Sabatier</p>
     <iframe id='cv_if5' src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=${encodeURIComponent(prodServerURL)}ut3.ics&theme=RE&ccolor=%23ffffc0&dims=1&gtype=cv_monthgrid&gcloseable=0&gnavigable=1&gperiod=month&itype=cv_simpleevent' allowTransparency=true scrolling='no' frameborder=0 height=600 width=800></iframe>
+    <p>Emploi du temps UT1 Capitole</p>
+    <iframe id='cv_if5' src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=${encodeURIComponent(prodServerURL)}ut1.ics&theme=RE&ccolor=%23ffffc0&dims=1&gtype=cv_monthgrid&gcloseable=0&gnavigable=1&gperiod=month&itype=cv_simpleevent' allowTransparency=true scrolling='no' frameborder=0 height=600 width=800></iframe>
     </body></html>`;
         fs.writeFileSync(paths.indexHtml, htmlContent);
     }
