@@ -17,14 +17,14 @@ const workOffline = getArgvValue('offline').argFound;
 if (!workOffline) {
     // Vérifie si l'utilitaire mail est correctement configuré, et on arrête tout si ce n'est pas le cas
     if (!mail.isSetupGood()) return mail.logerrAuth();
-    
+
     // Vérifie si on a de quoi générer le fichier index.html
     const prodServerURLArg = getArgvValue('prodServerURL');
     if (prodServerURLArg.argFound) {
         let prodServerURL = prodServerURLArg.string;
         // si l'URL du serveur ne termine pas par un / on en rajoute un
         if (prodServerURL.slice(-1) != '/') prodServerURL += '/';
-    
+
         let htmlContent = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Edt Miage</title><link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"><style>body{font-family: 'Roboto', sans-serif} iframe{background-color: lightgray} input {min-width: 50%}</style></head><body>
     <h3>Liens vers les fichiers iCal (.ics)</h3>
     <p><input onClick="this.select();" value="${prodServerURL}ut1.ics" type="text"/></p>
@@ -40,20 +40,18 @@ if (!workOffline) {
 }
 
 // UT1
+const whenUT1Done = () => console.log("✅  UT1 File is ready");
 if (workOffline) {
-    console.log("✅  UT1 File is ready")
+    whenUT1Done();
 } else {
     saveUT1file(paths.ut1.url, paths.ut1.ics_tmp, paths.ut1.ics).then(({ isNew, time }) => {
-        console.log("UT1 File is ready")
+        whenUT1Done();
         console.log(isNew ? "New file :" : "Already up-to-date :", time);
     });
 }
 
 // UT3
-const whenUT3Done = () => {
-    console.log("✅  UT3 File is ready");
-    if (!workOffline) console.log(isNew ? "New file :" : "Already up-to-date :", time);
-}
+const whenUT3Done = () => console.log("✅  UT3 File is ready");
 if (workOffline) {
     if (getArgvValue('ut3pdf2svg').argFound) {
         console.log('UT3 SVG file is being generated ...');
@@ -65,12 +63,16 @@ if (workOffline) {
     }
 } else {
     saveUT3file(paths.ut3.url, paths.ut3.pdf_tmp, paths.ut3.pdf).then(({ isNew, time }) => {
+        const whenUT3Done_online = () => {
+            whenUT3Done();
+            console.log(isNew ? "New file :" : "Already up-to-date :", time);
+        }
         if (isNew) {
             pdf2svg(rPath(paths.ut3.pdf), rPath(paths.ut3.svg)).then(() => {
-                ut3svg2ics(paths.ut3.svg, paths.ut3.ics, time).then(whenUT3Done);
+                ut3svg2ics(paths.ut3.svg, paths.ut3.ics, time).then(whenUT3Done_online);
             });
         } else {
-            whenUT3Done()
+            whenUT3Done_online();
         };
     });
 }
