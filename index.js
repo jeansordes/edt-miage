@@ -25,7 +25,7 @@ if (!workOffline) {
         // si l'URL du serveur ne termine pas par un / on en rajoute un
         if (prodServerURL.slice(-1) != '/') prodServerURL += '/';
 
-        let htmlContent = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Edt Miage</title><link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"><style>body{font-family: 'Roboto', sans-serif} iframe{background-color: lightgray} input {min-width: 50%}</style></head><body>
+        let htmlContent = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Edt Miage</title><link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"><style>body{font-family: 'Roboto', sans-serif} iframe{background-color: lightgray} input {min-width: 50%}</style><script async src="https://www.googletagmanager.com/gtag/js?id=UA-155402665-1"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-155402665-1");</script></head><body>
     <h3>Liens vers les fichiers iCal (.ics)</h3>
     <p><input onClick="this.select();" value="${prodServerURL}ut1.ics" type="text"/></p>
     <p><input onClick="this.select();" value="${prodServerURL}ut3.ics" type="text"/></p>
