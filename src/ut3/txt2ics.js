@@ -128,7 +128,7 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
             traiterEvt(['Outils stat. (TD1)', '', 'U4-300']);
         } else if (evt.length == 4 && evt[3] == 'bis') {
             traiterEvt(evt.slice(0, -1));
-        } else if (evt.length == 4 && evt[0] == '13h30 - 16h30' && evt[2] == 'TD1 Client RDV') {
+        } else if (evt[0] == '09h00-12h00' && nextEvt[1] == 'TD1 Client RDV') {
             icsEvents.push(array2icsJson(
                 `${evt[1]} (TD1 Client RDV)`,
                 '',
