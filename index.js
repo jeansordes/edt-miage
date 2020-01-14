@@ -40,12 +40,17 @@ if (!workOffline) {
 }
 
 // UT1
-const whenUT1Done = () => console.log("✅  UT1 File is ready");
+const whenUT1Done = (filiere) => console.log(`✅  UT1 ${filiere} File is ready`);
 if (workOffline) {
-    whenUT1Done();
+    whenUT1Done('FA');
+    whenUT1Done('FI');
 } else {
-    saveUT1file(paths.ut1.url, paths.ut1.ics_tmp, paths.ut1.ics).then(({ isNew, time }) => {
-        whenUT1Done();
+    saveUT1file(paths.ut1_fa.url, paths.ut1_fa.ics_tmp, paths.ut1_fa.ics).then(({ isNew, time }) => {
+        whenUT1Done('FA');
+        console.log(isNew ? "New file :" : "Already up-to-date :", time);
+    });
+    saveUT1file(paths.ut1_fi.url, paths.ut1_fi.ics_tmp, paths.ut1_fi.ics).then(({ isNew, time }) => {
+        whenUT1Done('FI');
         console.log(isNew ? "New file :" : "Already up-to-date :", time);
     });
 }
