@@ -21,7 +21,7 @@ if (!workOffline && !mail.isSetupGood()) return mail.logerrAuth();
 
 // Vérifie si on a de quoi générer le fichier index.html
 const prodServerURLArg = getArgvValue('prodServerURL');
-let prodServerURL = prodServerURLArg.argFound ? prodServerURLArg.string : 'https://edt.miage.online';
+let prodServerURL = prodServerURLArg.argFound ? prodServerURLArg.string : 'http://edt.miage.online';
 // si l'URL du serveur ne termine pas par un / on en rajoute un
 if (prodServerURL.slice(-1) != '/') prodServerURL += '/';
 
