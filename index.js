@@ -27,10 +27,10 @@ if (workOffline) {
 } else {
     saveUT1file(paths.ut1_fa.url, paths.ut1_fa.ics_tmp, paths.ut1_fa.ics).then(({ isNew, time }) => {
         // Pour éviter de casser l'ancien fonctionnement, on créé une copie de ut1_fa.ics, et on le renomme ut1_fa.ics
-        fs.copyFileSync(paths.ut1_fa.ics, path.resolve('./assets/ut1.ics'));
-
-        whenUT1Done('FA');
-        console.log(isNew ? "New file :" : "Already up-to-date :", time);
+        saveUT1file(paths.ut1_fa.url, paths.ut1_fa.ics_tmp, path.resolve('./assets/ut1.ics')).then(({ isNew, time }) => {
+            whenUT1Done('FA');
+            console.log(isNew ? "New file :" : "Already up-to-date :", time);
+        });
     });
     saveUT1file(paths.ut1_fi.url, paths.ut1_fi.ics_tmp, paths.ut1_fi.ics).then(({ isNew, time }) => {
         whenUT1Done('FI');
