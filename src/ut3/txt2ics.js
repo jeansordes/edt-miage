@@ -58,9 +58,11 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
                         startDateAsArray
                     ));
                 })
-            } else if (/TD[12]/.test(evt[1])) {
+            } else if (/TD[12]/.test(evt.join(' '))) {
                 // vérifier si c'est pour un groupe de TD en particulier
-                icsEvents.push(array2icsJson(evt[0] + ' (' + evt[1] + ')', evt[1], evt[2], startDateAsArray));
+                const evtJoinStr = evt.join(' ');
+                const tdString = /TD1.*TD2/.test(evtJoinStr) ? 'TD1 TD2' : /TD[12]/.exec(evtJoinStr)[0];
+                icsEvents.push(array2icsJson(evt[0] + ' (' + tdString + ')', evt[1], evt[2], startDateAsArray));
             } else {
                 icsEvents.push(array2icsJson(evt[0], evt[1], evt[2], startDateAsArray));
             }
@@ -104,11 +106,11 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
              * DEBUT DES EVENEMENTS PARTICULIERS *
              * ***********************************
              *************************************/
-        } else if (evt.length == 4 && evt[1] == 'Cours') {
+        } else if (evt.length == 4 && /(Cours)|(TD[12])/.test(evt[1])) {
             traiterEvt([evt[0], evt[1] + ' ' + evt[2], evt[3]]);
-        } else if (evt.length == 4 && evt[0] == '09h00-12h00') {
+        } else if (evt.length == 4 && /0?9h(00)?.?-.?12h(00)?/.test(evt[0])) {
             icsEvents.push(array2icsJson(
-                `${evt[1]} (${evt[2]})`,
+                evt[1],
                 nextEvt[2],
                 nextEvt[3],
                 [
@@ -122,26 +124,8 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
             ));
         } else if (evt.length == 4 && evt[2] == 'SOUTENANCE') {
             traiterEvt([`${evt[0]} (${evt[2]})`, evt[1], evt[3]]);
-        } else if (evt.length == 4 && evt.every((val, i) => val === ['Projet', 'TD2 RDV', 'Outils stat.', 'TD1 -U4-300'][i])) {
-            // Evenement qui va sans doute être mis à jour
-            traiterEvt(['Projet (TD2)', '', '']);
-            traiterEvt(['Outils stat. (TD1)', '', 'U4-300']);
         } else if (evt.length == 4 && evt[3] == 'bis') {
             traiterEvt(evt.slice(0, -1));
-        } else if (evt[0] == '09h00-12h00' && nextEvt[1] == 'TD1 Client RDV') {
-            icsEvents.push(array2icsJson(
-                `${evt[1]} (TD1 Client RDV)`,
-                '',
-                evt[3],
-                [
-                    startDate.getFullYear(),
-                    startDate.getMonth() + 1, // January == 0 in JS, but the Framework set January == 1
-                    startDate.getDate(),
-                    13,
-                    30
-                ],
-                { hours: 3 }
-            ));
         } else if (evt.includes("AOC Examen FI")) {
             traiterEvt(evt.slice(0, 3));
             traiterEvt([evt[3], '', evt[4]]);
@@ -152,20 +136,6 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
             traiterEvt(evt.slice(-2));
         } else if (evt[0] == 'AW Validation FA') {
             traiterEvt([evt[0], '', '']);
-        } else if (evt[0] == '9h - 12h' && nextEvt[0] == 'Projet') {
-            icsEvents.push(array2icsJson(
-                `${nextEvt[0]} (${nextEvt[1].match(/^(TD[12])/)[1]})`,
-                nextEvt[1],
-                nextEvt[2],
-                [
-                    startDate.getFullYear(),
-                    startDate.getMonth() + 1, // January == 0 in JS, but the Framework set January == 1
-                    startDate.getDate(),
-                    9,
-                    0
-                ],
-                { hours: 3 }
-            ));
             /***********************************
              * *********************************
              * FIN DES EVENEMENTS PARTICULIERS *
