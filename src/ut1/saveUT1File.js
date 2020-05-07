@@ -11,7 +11,15 @@ const saveDistantFile = (distantUrl, saveAs) => {
         request(distantUrl).pipe(fileStream);
     })
 },
-    getUT1IcsTime = str => new Date(str.match(/Exporté le:([\d\/\n\s:]*)\)/)[1].replace(/\r\n\s*/g, '').replace(/(\d\d)\/(\d\d)\/(\d{4})(.*)/, '$3-$2-$1$4')),
+    getUT1IcsTime = str => {
+        let d = str.match(/Exporté le:([\d\/\n\s:]*)\)/);
+        if (d) {
+            d[1].replace(/\r\n\s*/g, '').replace(/(\d\d)\/(\d\d)\/(\d{4})(.*)/, '$3-$2-$1$4');
+        } else {
+            logerr('getUT1IcsTime() did not work properly')
+        }
+        return new Date(d);
+    },
     logErrIfFound = err => err ? logerr(err) : 0;
 
 module.exports = (distantUrl, icsPath_tmp, icsPath) => new Promise((resolve, _) => {

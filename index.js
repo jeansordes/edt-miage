@@ -26,8 +26,8 @@ if (workOffline) {
     whenUT1Done('FI');
 } else {
     saveUT1file(paths.ut1_fa.url, paths.ut1_fa.ics_tmp, paths.ut1_fa.ics).then(({ isNew, time }) => {
-        // Pour éviter de casser l'ancien fonctionnement, on créé une copie de ut1_fa.ics, et on le renomme ut1_fa.ics
-        console.log(path.resolve('/assets/ut1.ics'));
+        // Pour éviter de casser l'ancien fonctionnement, on créé une copie de ut1_fa.ics, et on le renomme ut1.ics
+        console.log(path.resolve(__dirname + '/assets/ut1.ics'));
         saveUT1file(paths.ut1_fa.url, paths.ut1_fa.ics_tmp, path.resolve(__dirname + '/assets/ut1.ics')).then(({ isNew, time }) => {
             whenUT1Done('FA');
             console.log(isNew ? "New file :" : "Already up-to-date :", time);

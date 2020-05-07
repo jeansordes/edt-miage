@@ -154,6 +154,10 @@ module.exports = async (events, icsPath, fileCreatedOn) => {
             nbEventsFailed + (nbEventsFailed > 1 ? ` évenements ont échoué à êtres traités` : ` évenement a échoué à être traité`),
             'Bouge tes fesses, allez go go go'
         );
+    } else {
+        // TIMEZONE shift
+        shiftValue = -1; // quantité d'heure à appliquer, -1 ou +1
+        icsEvents = icsEvents.map(evt => ({ ...evt, start: evt.start.map((e, i) => i == 3 ? (e + shiftValue) : e) }));
     }
 
     ics.createEvents(icsEvents, (err, value) => {
