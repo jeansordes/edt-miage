@@ -1,7 +1,0 @@
-node_modules/
-assets/**
-!assets/preview.png
-!assets/*.html
-yarn.lock
-package-lock.json
-!.gitkeep
