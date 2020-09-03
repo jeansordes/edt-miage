@@ -42,8 +42,10 @@ $(document).ready(function () {
             // calendar legend
             document.getElementById("legend-feeds").insertAdjacentHTML('beforeend', "    <div class='calendar-feed'>" +
                 "<span class='fc-event-dot' style='background-color: " + ics.event_properties['color'] + "'></span>" +
-                "<span> <button id='href-" + cpt + "'>" + ics.title + "</button> <button id='copyLink" + cpt + "'>" +
-                "<img src='./img/clipboard.svg' alt='copy to clipboard' title='copy to clipboard' width='15px' style='padding-top: 3px;'/></button></span></div>");
+                "<span> <button id='href-" + cpt + "'>" + ics.title + "</button>"
+                // + "<button id='copyLink" + cpt + "'>" + "<img src='./img/clipboard.svg' "
+                // + "alt='copy to clipboard' title='copy to clipboard' width='15px' style='padding-top: 3px;'/></button>"
+                + "</span></div>");
             document.getElementById('href-' + cpt).addEventListener('click', () => {
                 window.location.hash = '#' + (cpt - 1);
                 window.location.reload();
@@ -54,7 +56,7 @@ $(document).ready(function () {
             }
         
             // copy button for ics feeds
-            document.querySelector("#copyLink" + cpt).addEventListener("click", function () { copy("ics-url" + cpt); });
+            // document.querySelector("#copyLink" + cpt).addEventListener("click", function () { copy("ics-url" + cpt); });
         }
 
         // change les fichiers affichés en fonction du clic

@@ -23,7 +23,7 @@
     <script src="js/ical_events.js" type="application/javascript"></script>
     <script src="js/ical_fullcalendar.js" type="application/javascript"></script>
     <script src="js/jquery.qtip.min.js" type="application/javascript"></script>
-    <script src="js/custom_display.js" type="application/javascript"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script> -->
 </head>
 
 <body>
@@ -35,11 +35,12 @@
     <!-- Pour modifier les liens ICS il faut aller dans js/custom_display.js -->
     <div class="box-tip no-print">
         <p>Liste des calendriers affichés :</p>
-        <div id="legend-feeds"></div></div>
+        <div id="legend-feeds"></div>
+    </div>
     <div id='calendar'></div>
     <!-- Cet outil de visualisation a été codé par 'popi', lien vers les sources : -->
     <!-- https://gitlab.nomagic.uk/popi/js_calendar_from_ics -->
-    <script src="js/copy.js" type="application/javascript"></script>
+    <script src="js/custom_display.js" type="application/javascript"></script>
 </body>
 
 </html>
