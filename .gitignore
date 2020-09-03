@@ -1,10 +1,8 @@
 node_modules/
-assets/**
-!assets/css
-!assets/js
-!assets/img
-!assets/preview.png
-!assets/*.html
+assets/*.ics
+assets/*.pdf
+assets/*.svg
+script.cmd
 yarn.lock
 package-lock.json
 !.gitkeep
