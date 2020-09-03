@@ -1,82 +1,42 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset='utf-8' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edt Miage</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif
-        }
+    <title>EDT Miage Toulouse</title>
 
-        iframe {
-            background-color: lightgray
-        }
+    <link href='css/fullcalendar.css' rel='stylesheet' />
+    <link href='css/list.min.css' rel='stylesheet' />
+    <link href='css/jquery.qtip.min.css' rel='stylesheet' />
+    <link href='css/fullcalendar.print.css' rel='stylesheet' media='print' />
+    <link href='css/overall.css' rel='stylesheet' />
 
-        input {
-            min-width: 50%
-        }
-    </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155402665-1"></script>
-    <script>function gtag() { dataLayer.push(arguments) } window.dataLayer = window.dataLayer || [], gtag("js", new Date), gtag("config", "UA-155402665-1");</script>
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-    <meta property="og:title" content="Emplois du temps de la Miage promo 2022 à Toulouse" />
-    <meta property="og:description" content="Pour pouvoir consulter en un clin d'oeil votre emploi du temps 💪🏻" />
-    <meta property="og:image" content="http://edt.miage.online/preview.png" />
-    <style>
-        body>span {
-            white-space: initial;
-            display: inline-block;
-            margin-right: 2rem;
-            max-width: 250px;
-        }
-    </style>
+    <script src='js/moment.min.js' type="application/javascript"></script>
+    <script src='js/jquery.min.js' type="application/javascript"></script>
+    <script src='js/fullcalendar.min.js' type="application/javascript"></script>
+    <script src='js/locale-all.js' type="application/javascript"></script>
+    <script src="js/ical.min.js" type="application/javascript"></script>
+    <script src="js/ical_events.js" type="application/javascript"></script>
+    <script src="js/ical_fullcalendar.js" type="application/javascript"></script>
+    <script src="js/jquery.qtip.min.js" type="application/javascript"></script>
+    <script src="js/custom_display.js" type="application/javascript"></script>
+    <script src="js/copy.js" type="application/javascript"></script>
 </head>
 
 <body>
-    <h3>📆 Emplois du temps Google</h3>
-    <ul>
-        <li><a href="https://calendar.google.com/calendar/embed?height=600&amp;wkst=2&amp;bgcolor=%23ffffff&amp;ctz=Europe%2FParis&amp;mode=WEEK&amp;src=bXVkNWhpcDl1ZjlrODE5YWNvMG85YWdtNnBnNHVqZ2RAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&amp;src=bDNpdWE0NTVydDFnZGMwMDE1bmY1NmhpbDgwcjF1ZmpAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&amp;color=%236633CC&amp;color=%2330487E&amp;title=Emploi%20du%20temps%20des%20Alternants"
-                target="_blank">Alternants</a></li>
-        <li><a href="https://calendar.google.com/calendar/embed?height=600&amp;wkst=2&amp;bgcolor=%23ffffff&amp;ctz=Europe%2FParis&amp;mode=WEEK&amp;src=MmwwNm40M2FhY29nMnVoc2N2MTg0NG42cWRnaGt1MWFAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&amp;src=bDNpdWE0NTVydDFnZGMwMDE1bmY1NmhpbDgwcjF1ZmpAaW1wb3J0LmNhbGVuZGFyLmdvb2dsZS5jb20&amp;color=%23AA5A00&amp;color=%2330487E&amp;title=Emploi%20du%20temps%20des%20Formations%20Initiales"
-                target="_blank">Formations Initiale</a></li>
-    </ul>
-    <h3>📆 Fichiers iCal (.ics)</h3>
-    <p>Google c'est cool, mais des fois il met jusqu'à 1 jour pour rafraichir votre calendrier (<strong>ce qui est
-            suffisant</strong> puisque les emplois du temps sont changés plusieurs jours à l'avance par le secrétariat)
-    </p>
-    <p>Et aussi il se peut que vous souhaitiez utiliser autre chose que Google pour consulter l'emploi du temps, voici
-        donc ci dessous les fichiers iCal (.ics), ainsi qu'un aperçu direct des fichiers</p>
-    <p>(Remarque : les fichiers sources sont vérifiés toutes les demi heures, 24h/7j)</p>
-    <span>
-        <p>Emploi du temps UT3 Paul Sabatier</p>
-        <p><input onClick="this.select();" id="ut3" value="http://edt.miage.online/ut3.ics" type="text" /><button
-                class="copybtn" data-clipboard-target="#ut3">copier URL</button></p>
-        <iframe id='cv_if5'
-            src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=http%3A%2F%2Fedt.miage.online%2Fut3.ics&theme=BL&ccolor=%23ffffc0&dims=1&gtype=cv_daygrid&gcloseable=0&gnavigable=1&gperiod=day&itype=cv_simpleevent'
-            allowTransparency=true scrolling='no' frameborder=0 height=600 width=250></iframe>
-    </span>
-    <span>
-        <p>Emploi du temps UT1 Capitole (<strong>Formation en Alternance</strong>)</p>
-        <p><input onClick="this.select();" id="ut1fa" value="http://edt.miage.online/ut1_fa.ics" type="text" /><button
-                class="copybtn" data-clipboard-target="#ut1fa">copier URL</button></p>
-        <iframe id='cv_if5'
-            src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=http%3A%2F%2Fedt.miage.online%2Fut1.ics&theme=BL&ccolor=%23ffffc0&dims=1&gtype=cv_daygrid&gcloseable=0&gnavigable=1&gperiod=day&itype=cv_simpleevent'
-            allowTransparency=true scrolling='no' frameborder=0 height=600 width=250></iframe>
-    </span>
-    <span>
-        <p>Emploi du temps UT1 Capitole (<strong>Formation Initiale</strong>)</p>
-        <p><input onClick="this.select();" id="ut1fi" value="http://edt.miage.online/ut1_fi.ics" type="text" /><button
-                class="copybtn" data-clipboard-target="#ut1fi">copier URL</button></p>
-        <iframe id='cv_if5'
-            src='http://cdn.instantcal.com/cvir.html?id=cv_nav5&file=http%3A%2F%2Fedt.miage.online%2Fut1_fi.ics&theme=BL&ccolor=%23ffffc0&dims=1&gtype=cv_daygrid&gcloseable=0&gnavigable=1&gperiod=day&itype=cv_simpleevent'
-            allowTransparency=true scrolling='no' frameborder=0 height=600 width=250></iframe>
-    </span>
-    <p>site réalisé par <a href="https://www.jzs.fr/">Jean Sordes</a></p>
-    <script>new ClipboardJS('.copybtn')</script>
+    <center class="no-print">
+        <div id="separator"></div>
+        <div id="ics-feeds">
+        </div>
+    </center>
+    <!-- Pour modifier les liens ICS il faut aller dans js/custom_display.js -->
+    <div class="box-tip no-print">
+        <p>Liste des calendriers affichés :</p>
+        <div id="legend-feeds"></div></div>
+    <div id='calendar'></div>
+    <!-- Cet outil de visualisation a été codé par 'popi', lien vers les sources : -->
+    <!-- https://gitlab.nomagic.uk/popi/js_calendar_from_ics -->
 </body>
 
 </html>

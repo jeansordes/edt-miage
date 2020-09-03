@@ -1,149 +1,96 @@
+const dateformat = require('dateformat');
 /**
  * TODO LIST pour quand le PDF change :
  * Ouvrir Inkscape, faire ctrl+maj+D puis tout en haut à droite mettre PT au lieux de PX
  * Ensuite, mettre des guides horizontaux et verticaux là où il faut
  * Puis, mettre à jour les valeurs de :
- * - week2days,
+ * - firstDayOfCalendar,
+ * - lastDayOfCalendar,
+ * - daysOfTheWeek,
  * - svgDatesX,
- * - svgDatesY,
- * - Facultatif : rangeY (seulement si l'emploi du temps ne se fait plus du lundi au mercredi)
+ * - svgDatesY, ATTENTION POUR CELUI LA :
+ *          il se peut qu'il y ait une manipulation supplémentaire à faire
+ *          (je ne sais pas pourquoi) il se peut que l'axe soit inversé,
+ *          et dans ce cas il faudra mettre reverseYAxis = true
  * Et enfin, gérer les cas non standards dans le fichier "src/ut3/txt2ics.js"
  * TIPS : après un premier lancement "online", tu peux te contenter de lancer le server en mode "offline"
  * et ainsi éviter de faire tout le processus de conversion du PDF vers le SVG qui prend longtemps
  * (idéal pour développer rapidement tes fonctions qui gèrent les évenements non standards)
  */
 
-const week2days = {
-    // week numbers
-    3: [
-        [2020, 1, 13],
-        [2020, 1, 14],
-        [2020, 1, 15]
-    ],
-    4: [
-        [2020, 1, 20],
-        [2020, 1, 21],
-        [2020, 1, 22]
-    ],
-    5: [
-        [2020, 1, 27],
-        [2020, 1, 28],
-        [2020, 1, 29]
-    ],
-    6: [
-        [2020, 2, 3],
-        [2020, 2, 4],
-        [2020, 2, 5]
-    ],
-    7: [
-        [2020, 2, 10],
-        [2020, 2, 11],
-        [2020, 2, 12]
-    ],
-    9: [
-        [2020, 2, 24],
-        [2020, 2, 25],
-        [2020, 2, 26]
-    ],
-    10: [
-        [2020, 3, 2],
-        [2020, 3, 3],
-        [2020, 3, 4]
-    ],
-    11: [
-        [2020, 3, 9],
-        [2020, 3, 10],
-        [2020, 3, 11]
-    ],
-    12: [
-        [2020, 3, 16],
-        [2020, 3, 17],
-        [2020, 3, 18]
-    ],
-    13: [
-        [2020, 3, 23],
-        [2020, 3, 24],
-        [2020, 3, 25]
-    ],
-    19: [
-        [2020, 5, 4],
-        [2020, 5, 5],
-        [2020, 5, 6]
-    ],
-    20: [
-        [2020, 5, 11],
-        [2020, 5, 12],
-        [2020, 5, 13]
-    ],
-    21: [
-        [2020, 5, 18],
-        [2020, 5, 19],
-        [2020, 5, 20]
-    ],
-    23: [
-        [2020, 6, 1],
-        [2020, 6, 2],
-        [2020, 6, 3]
-    ],
-}
+const firstDayOfCalendar = new Date("2020-09-09");
+const lastDayOfCalendar = new Date("2021-01-11");
+const daysOfTheWeek = [2, 3, 4]; // 0 lundi, 1 mardi, 2 mercredi, 3 jeudi, 4 vendredi, 5 samedi, 7 dimanche
+
 const svgDatesX = {
     // week number that is ended on this line
-    43: null,
-    89: 3,
-    135: 4,
-    180: 5,
-    226: 6,
-    272: 7,
-    336: 9,
-    382: 10,
-    427: 11,
-    473: 12,
-    519: 13,
-    653: 19,
-    699: 20,
-    745: 21,
-    808: 23,
+    45: null,
+    103: 37,
+    160: 38,
+    217: 39,
+    275: 40,
+    332: 41,
+    394: 42,
+    419: 43,
+    444: 44,
+    487: 45,
+    542: 46,
+    600: 47,
+    657: 48,
+    714: 49,
+    772: 50,
+    830: 51,
+    854: 52,
+    880: 53,
+    930: 1,
 };
 const svgDatesY = {
-    // weekday (0 monday, 1 tuesday, 2 wednesday), starting hour, starting minute
-    516: [0, 7, 45],
-    489: [0, 10, 0],
-    462: [0, 12, 0],
-    458: [0, 13, 30],
-    426: [0, 15, 45],
-    388: [0, 18, 0],
-    360: [0, 20, 0],
+    // weekday (0 lundi, 1 mardi, 2 mercredi, 3 jeudi, 4 vendredi), starting hour, starting minute
+    720: [2, 7, 45],
+    685: [2, 10, 0],
+    631: [2, 12, 0],
+    623: [2, 13, 45],
+    579: [2, 16, 0],
+    538: [2, 18, 15],
+    512: [2, 20, 15],
 
-    343: [1, 7, 45],
-    319: [1, 10, 0],
-    289: [1, 12, 0],
-    285: [1, 13, 30],
-    255: [1, 15, 45],
-    224: [1, 18, 0],
-    197: [1, 20, 0],
+    496: [3, 7, 45],
+    453: [3, 10, 0],
+    417: [3, 12, 0],
+    409: [3, 13, 45],
+    315: [3, 16, 0],
+    246: [3, 18, 15],
+    216: [3, 20, 15],
 
-    179: [2, 7, 45],
-    151: [2, 10, 0],
-    124: [2, 12, 0],
+    200: [4, 13, 45],
+    143: [4, 16, 0],
+    86: [4, 18, 15],
+    68: [4, 20, 15],
 };
-/**
- * Range for each dates / hours
- */
-// ⚠ Pour YKeys c'est parce que les clés sont triés par ordre croissant,
-// c'est à dire les dernières clés jusqu'aux premières
-let svgKeys = Object.keys(svgDatesY);
-const rangeY = [
-    [svgKeys[0], svgKeys[2]],
-    [svgKeys[3], svgKeys[9]],
-    [svgKeys[10], svgKeys[16]]
-];
-svgKeys = Object.keys(svgDatesX);
-const rangeX = [svgKeys[0], svgKeys[svgKeys.length - 1]];
+const reverseYAxis = false;
+
+// week2days
+let tmpDate = firstDayOfCalendar;
+let week2days = {},
+    lastWeek = parseInt(dateformat(lastDayOfCalendar, "W"));
+for (let i = parseInt(dateformat(tmpDate, "W")); i != lastWeek; i = parseInt(dateformat(tmpDate, "W"))) {
+    week2days[i] = [];
+    for (let j = parseInt(dateformat(tmpDate, 'N')) - 1; j < 7; j++) {
+        if (daysOfTheWeek.includes(j)) {
+            week2days[i].push([
+                tmpDate.getFullYear(),
+                tmpDate.getMonth() + 1, // because January == 0 in JS, and the framework set January == 1
+                tmpDate.getDate()
+            ]);
+        }
+        tmpDate.setDate(tmpDate.getDate() + 1);
+    }
+}
 
 module.exports = {
     week2days,
     svgDatesX,
     svgDatesY,
-    rangeX,
-    rangeY
+    reverseYAxis,
+    daysOfTheWeek,
 }
