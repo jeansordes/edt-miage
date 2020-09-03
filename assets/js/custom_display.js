@@ -71,7 +71,7 @@ $(document).ready(function () {
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay,listAllYears'
             },
-            defaultView: 'agendaWeek',
+            defaultView: 'listAllYears',
             firstDay: '1',
             locale: 'fr',
             lang: 'fr',
