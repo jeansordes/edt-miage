@@ -64,7 +64,6 @@ $(document).ready(function () {
         } else {
             ics_sources = [...all_ics_sources];
         }
-        console.log(ics_sources)
 
         $('#calendar').fullCalendar({
             header: {
