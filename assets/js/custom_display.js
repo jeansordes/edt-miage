@@ -1,8 +1,9 @@
 // Edit your ics sources here
+
 const all_ics_sources = [
-    // { url: 'ut3.ics', title: 'EDT Paul Sabatier', event_properties: { color: 'SeaGreen' } },
-    { url: 'ut1_fa.ics', title: 'EDT Capitole Alternants', event_properties: { color: 'DodgerBlue' } },
-    { url: 'ut1_fi.ics', title: 'EDT Capitole Formation Initiale', event_properties: { color: 'red' } },
+    // { url: 'ut3.ics?v=' + Date.now(), title: 'EDT Paul Sabatier', event_properties: { color: 'SeaGreen' } },
+    { url: 'ut1_fi.ics?v=' + Date.now(), sources: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=2273", title: 'EDT Capitole Formation Initiale', event_properties: { color: 'DodgerBlue' } },
+    { url: 'ut1_fa.ics?v=' + Date.now(), sources: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=3674", title: 'EDT Capitole Alternants', event_properties: { color: 'orange' } },
 ]
 
 ////////////////////////////////////////////////////////////////////////////
@@ -40,23 +41,46 @@ $(document).ready(function () {
             document.getElementById("ics-feeds").insertAdjacentHTML('beforeend', "<span hidden id='ics-url" + cpt + "'>" + ics.url + "</span>");
         
             // calendar legend
-            document.getElementById("legend-feeds").insertAdjacentHTML('beforeend', "    <div class='calendar-feed'>" +
-                "<span class='fc-event-dot' style='background-color: " + ics.event_properties['color'] + "'></span>" +
-                "<span> <button id='href-" + cpt + "'>" + ics.title + "</button>"
-                // + "<button id='copyLink" + cpt + "'>" + "<img src='./img/clipboard.svg' "
-                // + "alt='copy to clipboard' title='copy to clipboard' width='15px' style='padding-top: 3px;'/></button>"
-                + "</span></div>");
-            document.getElementById('href-' + cpt).addEventListener('click', () => {
+            let cleanUrl = ics.url.split('?v=')[0];
+            let showBackButton = all_ics_sources.length != ics_sources.length;
+            document.getElementById("legend-feeds").insertAdjacentHTML('beforeend',
+            `<div class='calendar-feed'>
+                ${showBackButton ? `<a href='/'>Afficher tous les calendriers</a>` : ''}
+
+                <div class="mt-1">
+                    <span class='fc-event-dot' style='background-color: ${ics.event_properties['color']}'></span>
+                    ${ics.title}
+                    ${showBackButton ? '' : `<button class="block mt-1" id='href-${cpt}'>Afficher ce calendrier uniquement</button>`}
+                    <div class="mt-1">Url du fichier</div>
+                    <div class="mt-1">
+                        <input id="input${cpt}" value="${window.location.origin + '/' + cleanUrl}" size="15
+                        "/>
+                        <button id='copyLink${cpt}'>
+                            <img src='./img/clipboard.svg' alt='copy to clipboard' title='copy to clipboard' width='15px' style='padding-top: 3px;'/>
+                            <span id="tooltip${cpt}">Copier</span>
+                        </button>
+                    </div>
+                    <a href="">Lien d'origine</a>
+                </div>
+            </div>`);
+
+            document.querySelector('#href-' + cpt).addEventListener('click', () => {
                 window.location.hash = '#' + (cpt - 1);
                 window.location.reload();
             });
 
             if (all_ics_sources.length != ics_sources.length) {
-                document.getElementById("legend-feeds").insertAdjacentHTML('beforeend', "<br><div class='calendar-feed'><a href='/'>Afficher tous les calendriers</a></div>");
+                document.getElementById("legend-feeds").insertAdjacentHTML('beforeend', "");
             }
         
             // copy button for ics feeds
-            // document.querySelector("#copyLink" + cpt).addEventListener("click", function () { copy("ics-url" + cpt); });
+            document.querySelector("#copyLink" + cpt).addEventListener("click", evt => {
+                let input = document.querySelector("#input" + cpt);
+                input.select();
+                input.setSelectionRange(0,99999);
+                document.execCommand("copy");
+                document.querySelector("#tooltip" + cpt).innerHTML = "URL copié !";
+            });
         }
 
         // change les fichiers affichés en fonction du clic
@@ -73,7 +97,7 @@ $(document).ready(function () {
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay,listAllYears'
             },
-            defaultView: 'listAllYears',
+            defaultView: 'agendaWeek',
             firstDay: '1',
             locale: 'fr',
             lang: 'fr',

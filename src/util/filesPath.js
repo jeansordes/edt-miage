@@ -10,8 +10,10 @@ module.exports = {
         ics: path.resolve(assetsDirname + "ut3.ics"),
     },
     // Pour trouver ces URL, il faut aller à l'adresse suivante :
-    // https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=true&showPianoDays=true&showPianoWeeks=true&showOptions=true&days=0,1,2,3,4,5&displayConfName=Web&projectId=17&login=visu&password=visu&top=top.IFRechercherPlanningconnecte
-    // c'est le showOptions=true qui est important pour pouvoir afficher le bouton "Exporter" en bas à gauche
+    // https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=true&projectId=17&login=visu&password=visu&top=top.IFRechercherPlanningconnecte
+    // puis chercher la bonne ressource, et une fois trouvé, explorer le code (ctrl+shift+c avant de cliquer sur l'élément dans l'arbre de gauche)
+    // une fois trouvé, il faut chercher un code commencant par Tree_XXXX et le nombre correspond au numéro de la ressource (2273 par exemple)
+    // il suffit alors d'ajouter l'argument suivant dans l'URL : resources=2273
     ut1_fa: {
         url: "https://ade-production.ut-capitole.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?data=8241fc38732002144d480adf1160df25e0fa50826f0818af695b0a09b8713700ec7f554d6ed7ba1b8a72a25d105159e8dee3e8a66a2957ae",
         ics: path.resolve(assetsDirname + "ut1_fa.ics"),

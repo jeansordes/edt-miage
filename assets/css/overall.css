@@ -51,6 +51,12 @@ button {
   vertical-align: middle;
   border-radius: 4px;
 }
+.mt-1 {
+    margin-top: .5rem;
+}
+.block {
+    display: block;
+}
 @media print
 {    
     .no-print, .no-print *

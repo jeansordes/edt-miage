@@ -40,6 +40,7 @@ if (workOffline) {
 }
 
 // UT3
+/*
 const whenUT3Done = () => console.log("✅  UT3 File is ready");
 if (workOffline) {
     if (getArgvValue('ut3pdf2svg').argFound) {
@@ -65,3 +66,4 @@ if (workOffline) {
         };
     });
 }
+// */
