@@ -1,9 +1,9 @@
 // Edit your ics sources here
 
 const all_ics_sources = [
-    // { url: 'ut3.ics?v=' + Date.now(), title: 'EDT Paul Sabatier', event_properties: { color: 'SeaGreen' } },
-    { url: 'ut1_fi.ics?v=' + Date.now(), sources: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=2273", title: 'EDT Capitole Formation Initiale', event_properties: { color: 'DodgerBlue' } },
-    { url: 'ut1_fa.ics?v=' + Date.now(), sources: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=3674", title: 'EDT Capitole Alternants', event_properties: { color: 'orange' } },
+    // { url: 'ut3.ics?v=' + Date.now(), source: "https://www.raphaelbuquet.com/tools/edt/", title: 'EDT Paul Sabatier', event_properties: { color: 'red' } },
+    { url: 'ut1_fi.ics?v=' + Date.now(), source: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=2273", title: 'EDT Capitole Formation Initiale', event_properties: { color: 'DodgerBlue' } },
+    { url: 'ut1_fa.ics?v=' + Date.now(), source: "https://ade-production.ut-capitole.fr/direct/index.jsp?showTree=false&days=0,1,2,3,4,5&login=visu&password=visu&locale=fr&projectId=17&resources=3674", title: 'EDT Capitole Alternants', event_properties: { color: 'orange' } },
 ]
 
 ////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ $(document).ready(function () {
                             <span id="tooltip${cpt}">Copier</span>
                         </button>
                     </div>
-                    <a href="">Lien d'origine</a>
+                    <a href="${ics.source}" target="_blank">Ressource d'origine</a>
                 </div>
             </div>`);
 
@@ -113,7 +113,7 @@ $(document).ready(function () {
             eventLimit: true, // allow "more" link when too many events
             eventRender: function (event, element, view) {
                 if (view.name == "listMonth" || view.name == "listWeek") {
-                    element.find('.fc-list-item-title').append('<div style="margin-top:5px;"></div><span style="font-size: 0.9em">' + (event.description || 'no description') + '</span>' + ((event.loc) ? ('<span style="margin-top:5px;display: block"><b>Venue: </b>' + event.loc + '</span>') : ' ') + '</div>');
+                    element.find('.fc-list-item-title').append('<div style="margin-top:5px;"></div><span style="font-size: 0.9em">' + (event.description || 'no description') + '</span>' + ((event.loc) ? ('<span style="margin-top:5px;display: block"><b>Lieu: </b>' + event.loc + '</span>') : ' ') + '</div>');
                 } else if (view.name == "agendaWeek" || view.name == "agendaDay") {
                     element.qtip({
                         content: {
@@ -123,7 +123,7 @@ $(document).ready(function () {
                                         + ' - ' + event.end.format("HH:mm"))) + '</small><br/>' +
                                 '<b>' + event.title + '</b>' +
                                 ((event.description) ? ('<br/>' + event.description) : ' ') +
-                                ((event.loc) ? ('<br/><b>Venue: </b>' + event.loc) : ' ')
+                                ((event.loc) ? ('<br/><b>Lieu: </b>' + event.loc) : ' ')
                         },
                         style: {
                             classes: 'qtip-bootstrap qtip-rounded qtip-shadown qtip-light',
@@ -142,7 +142,7 @@ $(document).ready(function () {
                                         + ' - ' + event.end.format("HH:mm"))) + '</small><br/>' +
                                 '<b>' + event.title + '</b>' +
                                 ((event.description) ? ('<br/>' + event.description) : ' ') +
-                                ((event.loc) ? ('<br/><b>Venue: </b>' + event.loc) : ' ')
+                                ((event.loc) ? ('<br/><b>Lieu: </b>' + event.loc) : ' ')
                         },
                         style: {
                             classes: 'qtip-bootstrap qtip-rounded qtip-shadown qtip-light',
