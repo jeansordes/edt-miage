@@ -1,4 +1,5 @@
 // LIB
+require('dotenv-placeholder').config();
 const
     rPath = require('path').resolve,
     saveUT1file = require('./src/ut1/saveUT1File'),
@@ -7,13 +8,13 @@ const
     ut3svg2ics = require('./src/ut3/ut3svg2ics'),
     exec = require('util').promisify(require('child_process').exec),
     pdf2svg = async (inputPath, outputPath) => await exec(`inkscape -l "${outputPath}" "${inputPath}"`),
-    { getArgvValue } = require('./src/util/parseArgv'),
     fs = require('fs'),
     path = require('path'),
-    mail = require('./src/util/mail');
+    mail = require('./src/util/mail'),
+    env = process.env;
 
 // Vérifier si l'utilisateur a lancé le programme en mode "offline"
-const workOffline = getArgvValue('offline').argFound;
+const workOffline = process.argv.includes('--offline');
 
 // Vérifie si l'utilitaire mail est correctement configuré, et on arrête tout si ce n'est pas le cas
 // (sauf si on est offline, dans ce cas là, balek)
@@ -39,31 +40,4 @@ if (workOffline) {
     });
 }
 
-// UT3
-/*
-const whenUT3Done = () => console.log("✅  UT3 File is ready");
-if (workOffline) {
-    if (getArgvValue('ut3pdf2svg').argFound) {
-        console.log('UT3 SVG file is being generated ...');
-        pdf2svg(rPath(paths.ut3.pdf), rPath(paths.ut3.svg)).then(() => {
-            ut3svg2ics(paths.ut3.svg, paths.ut3.ics, new Date()).then(whenUT3Done);
-        });
-    } else {
-        ut3svg2ics(paths.ut3.svg, paths.ut3.ics, new Date()).then(whenUT3Done);
-    }
-} else {
-    saveUT3file(paths.ut3.url, paths.ut3.pdf_tmp, paths.ut3.pdf).then(({ isNew, time }) => {
-        const whenUT3Done_online = () => {
-            whenUT3Done();
-            console.log(isNew ? "New file :" : "Already up-to-date :", time);
-        }
-        if (isNew) {
-            pdf2svg(rPath(paths.ut3.pdf), rPath(paths.ut3.svg)).then(() => {
-                ut3svg2ics(paths.ut3.svg, paths.ut3.ics, time).then(whenUT3Done_online);
-            });
-        } else {
-            whenUT3Done_online();
-        };
-    });
-}
-// */
+// UT3 : todo

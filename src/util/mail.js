@@ -1,35 +1,28 @@
+require("dotenv-placeholder").config();
 const nodemailer = require('nodemailer'),
     { logerr, logwarn } = require('./logUtil'),
-    { getArgvValue, printUsage } = require('./parseArgv');
+    env = process.env;
 
 // config
-const personToContactArg = "personToContact",
-    mailLoginArg = "emailLogin",
-    mailPwdArg = "emailPassword",
-    mailHostAdressArg = "mailHostAdress",
-    mailHostPortArg = "mailHostPort";
 const logerrAuth = () => {
     logerr(`Il manque des arguments (soit des identifiants mail, soit l'option --offline)`);
-    printUsage();
+    console.log('\x1b[36m%s\x1b[0m', 'Usage:\n\t'
+            + 'node index.js --offline (use only the files already downloaded, only for dev purposes)');
 };
 
 // check si les identifiants ont été fournis
-const mailSetupArgsFound = getArgvValue(personToContactArg).argFound
-    && getArgvValue(mailLoginArg).argFound
-    && getArgvValue(mailPwdArg).argFound
-    && getArgvValue(mailHostAdressArg).argFound
-    && getArgvValue(mailHostPortArg).argFound
-    && getArgvValue();
 var mailAuth, mailHost, transporter, mailOptions;
+const mailSetupArgsFound = env.personToContact && env.mailHostAdress
+    && env.mailHostPort && env.emailLogin && env.emailPassword;
 if (mailSetupArgsFound) {
     mailAuth = {
-        user: getArgvValue(mailLoginArg).string,
-        pass: getArgvValue(mailPwdArg).string
+        user: env.emailLogin,
+        pass: env.emailPassword,
     };
     mailHost = {
-        host: getArgvValue(mailHostAdressArg).string,
-        port: getArgvValue(mailHostPortArg).string,
-    }
+        host: env.mailHostAdress,
+        port: env.mailHostPort,
+    };
     transporter = nodemailer.createTransport({
         ...mailHost,
         auth: mailAuth
@@ -43,16 +36,15 @@ module.exports = {
     isSetupGood: () => mailSetupArgsFound,
     logerrAuth: logerrAuth,
     warnAdmin: (subject, msg) => {
-        if (getArgvValue('offline').argFound) {
+        if (process.argv.includes('--offline')) {
             logwarn(`No email was sent because the argument "--offline" was found`);
             logerr(subject);
         } else if (!mailSetupArgsFound) {
             logerrAuth();
         } else {
-
             mailOptions = {
                 ...mailOptions,
-                to: `Person responsible for edt.miage.online <${getArgvValue(personToContactArg).string}>`,
+                to: `Person responsible for edt.miage.online <${env.personToContactArg}>`,
                 subject: `⚠ edt.miage.online : ${subject}`,
                 text: msg
             }

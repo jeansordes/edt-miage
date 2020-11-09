@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "dateformat": "^3.0.3",
+    "dotenv-placeholder": "^1.4.4",
     "ics": "^2.18.0",
     "nodemailer": "^6.3.1",
     "pdf-parse": "^1.1.1",
