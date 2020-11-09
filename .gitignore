@@ -6,3 +6,4 @@ script.cmd
 yarn.lock
 package-lock.json
 !.gitkeep
+.env
